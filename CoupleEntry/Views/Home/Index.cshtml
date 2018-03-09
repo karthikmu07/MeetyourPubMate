@@ -8,7 +8,7 @@
             <div style="background-color:whitesmoke;padding:10px;margin-bottom:10px;">
                 <h4 class="text-center">Filter by:</h4>
                 <label for="distanceFilter">Max distance(in kms):</label><br />
-                <input type="number" min="0" max="100" id="distanceFilter" ng-model="distanceFilter" class="input-sm" /><br />
+                <input type="number" min="0" max="100000" id="distanceFilter" ng-model="distanceFilter" ng-keydown="FindUsers($event)"  class="input-sm" /><br />
                 <label for="genderFilter">Gender:</label>
                 <select class="form-control input-sm" id="genderFilter" ng-model="genderFilter">
                     <option value="Male">Male</option>

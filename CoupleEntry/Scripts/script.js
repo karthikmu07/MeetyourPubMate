@@ -12,7 +12,8 @@ mainModule.run(function ($rootScope, $location) {
         gapi.load('auth2', function () {
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
-                RedirectToLogin();
+                console.log('User signed out.');
+                window.location.href = baseUrl + "/login/login";
             });
         });
 
@@ -28,7 +29,7 @@ mainModule.run(function ($rootScope, $location) {
 });
 
 function GetUserInfo($http, $rootScope) {
-    $http.get("./Home/GetUserInfo")
+    $http.get(baseUrl + "/Home/GetUserInfo")
         .then(function successCallback(response) {
             $rootScope.MyInfo = response.data;
         }, function errorCallback(response) {
@@ -51,11 +52,10 @@ function Initialize($scope, $http, $rootScope) {
 
 function GetMyLocation($scope) {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition($scope.SetMyPosition, ShowError, { maximumAge: Infinity, timeout: 60000, enableHighAccuracy: false });
+        navigator.geolocation.getCurrentPosition($scope.SetMyPosition, ShowError, { maximumAge: Infinity, timeout: 60000, enableHighAccuracy: true });
     } else {
         x.innerHTML = "Geolocation is not supported by this browser.";
     }
-
 }
 
 function ShowOnMap(lat, lon, label, address) {
@@ -76,18 +76,15 @@ function ShowOnMap(lat, lon, label, address) {
     });
     if (label != "You")
         lastMarker = marker;
-
-
 }
 
 function UpsertUserPosition(position, $http) {
-    $http.get("./Home/AddUserPositionToDB?latitude=" + position.coords.latitude + "&longitude=" + position.coords.longitude)
+    $http.get(baseUrl + "/Home/AddUserPositionToDB?latitude=" + position.coords.latitude + "&longitude=" + position.coords.longitude)
         .then(function successCallback(response) {
 
         }, function errorCallback(response) {
             console.log("Unable to perform get request");
         });
-
 }
 
 function FindNearbyPeople($scope, users, $rootScope) {
@@ -170,7 +167,7 @@ function ShowError(error) {
 
 function AddOrRemoveNewLike(person, liked, $http, $scope, $rootScope) {
     var targetId = person.UserId.toString();
-    $http.get("./Home/AddOrRemoveLike?targetId=" + person.UserId + "&liked=" + liked)
+    $http.get(baseUrl + "/Home/AddOrRemoveLike?targetId=" + person.UserId + "&liked=" + liked)
         .then(function successCallback(response) {
             if (response.status != 200) {
                 location.reload();
@@ -212,7 +209,7 @@ mainModule.controller('loginController', function ($scope, $http) {
 
 });
 
-mainModule.controller('indexController', function ($scope, $http, $rootScope) {
+mainModule.controller('indexController', function ($scope, $http, $rootScope, $interval) {
     Initialize($scope, $http, $rootScope);
     $scope.SetMyPosition = function (position) {
         $scope.myLat = position.coords.latitude;
@@ -226,13 +223,13 @@ mainModule.controller('indexController', function ($scope, $http, $rootScope) {
     }
 
     GetMyLocation($scope);
-    setInterval(function () {
+    $interval(function () {
         GetMyLocation($scope);
     }, 120000);
 
     $scope.GetOtherUsers = function () {
         $rootScope.showMask = true;
-        $http.get("./Home/GetOtherUsers")
+        $http.get(baseUrl + "/Home/GetOtherUsers")
             .then(function successCallback(response) {
                 if (response.status == 200) {
                     FindNearbyPeople($scope, response.data, $rootScope);
@@ -302,5 +299,10 @@ mainModule.controller('indexController', function ($scope, $http, $rootScope) {
         AddOrRemoveNewLike(person, liked, $http, $scope, $rootScope);
     }
 
+    $scope.FindUsers = function (event)
+    {
+        if (event.keyCode == 13)
+            $scope.GetOtherUsers();
+    }
 
 });

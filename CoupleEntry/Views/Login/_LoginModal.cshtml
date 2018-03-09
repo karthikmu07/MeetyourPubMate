@@ -15,7 +15,6 @@
 
 <script>
     function onSignIn(googleUser) {
-        debugger;
         var profile = googleUser.getBasicProfile();
         var id = profile.getId(); // Do not send to your backend! Use an ID token instead.
         var name = profile.getName();
@@ -32,9 +31,8 @@
          
 
         var loginModel = { Name: name, Email: emailId, ImageUrl: imageUrl, Token: id_token, Expiry: expiryTime };
-        $http = angular.injector(["ng"]).get("$http");
-        var res = $http.post('./Login/Login', loginModel).then(function successCallback(response) {
-            debugger;
+        $http = angular.injector(["ng"]).get("$http"); 
+        var res = $http.post(baseUrl+'/Login/Login', loginModel).then(function successCallback(response) {
             if (response.data.result == 'Error') {
                 //show error
             }

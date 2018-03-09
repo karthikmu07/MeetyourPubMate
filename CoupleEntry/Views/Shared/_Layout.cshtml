@@ -9,7 +9,7 @@
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
     <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAme7silNihhy4-UJNE76I2LUdf2PxkEZY&callback=initMap">
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAme7silNihhy4-UJNE76I2LUdf2PxkEZY">
     </script>
     <script src="~/Scripts/angular.js"></script>
      <script src="~/Scripts/script.js"></script>
@@ -17,7 +17,9 @@
 
 </head>
 <body>
-
+    <script>
+        var baseUrl='@string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))';     
+    </script>
     <div ng-app="mainModule">
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">

@@ -3,13 +3,6 @@
     User currentUser = SessionService.GetProperty(SessionService.SessionVariableNames.Current_User) as User;   
 }
 
-<script>
-    function RedirectToLogin()
-    {debugger;
-        console.log('User signed out.');
-        window.location.href = '@Url.Action("Login", "Login")';
-    }
-</script>
 
 @if (currentUser != null)
 {
