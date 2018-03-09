@@ -3,23 +3,20 @@ var map;
 var lastMarker;
 var mainModule = angular.module("mainModule", []);
 
-mainModule.run(function ($rootScope,$location) {
+mainModule.run(function ($rootScope, $location) {
     $rootScope.showMask = false;
     $rootScope.showModal = true;
     $rootScope.signOut = function () {
-       // debugger;
+
+        gapi.auth2.init();
         gapi.load('auth2', function () {
-            gapi.auth2.init();
-         //   debugger;
-           // alert($location.$$host);
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
-                console.log('User signed out.');
-                window.location.href = './login/login';
+                RedirectToLogin();
             });
         });
-      
-       
+
+
     }
     $rootScope.ShowMyModal = function () {
         $rootScope.showModal = true;
