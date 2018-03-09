@@ -1,0 +1,68 @@
+﻿﻿@{
+    ViewBag.Title = "Welcome";
+}
+
+@section Integration{
+    <div class="container-fluid" ng-controller="indexController">
+        <div class="col-sm-3">
+            <div style="background-color:whitesmoke;padding:10px;margin-bottom:10px;">
+                <h4 class="text-center">Filter by:</h4>
+                <label for="distanceFilter">Max distance(in kms):</label><br />
+                <input type="number" min="0" max="100" id="distanceFilter" ng-model="distanceFilter" class="input-sm" /><br />
+                <label for="genderFilter">Gender:</label>
+                <select class="form-control input-sm" id="genderFilter" ng-model="genderFilter">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Both">Both</option>
+                </select><br />
+                <button id="findPeopleBtn" ng-click="GetOtherUsers()" class="btn btn-warning btn-lg">Find people near me!&raquo;</button>
+            </div>
+            <div  ng-show="HaveMatches" style="background-color:whitesmoke;padding:10px;" id="matchedPeopleListContainerParent">
+                <h4 class="text-center">My Matches:</h4>
+                <div class="container" id="matchedPeopleListContainer">
+                    <div class="panel-group" id="matchedPeopleList">
+                        <div ng-repeat="person in peopleList" ng-if="person.ShowInMatched" ng-class="GetGenderClass(person.Gender)" ng-click="ShowPersonOnMap(person)">
+                            <div class="panel-heading">
+                                {{person.Name}}
+                                <span ng-click="LikeUnlike(person,$event)" ng-class="GetLikeClass(person.UserId)"></span>
+                            </div>
+                            <div class="panel-body">
+                                <span class="pull-right iconImageUrl" style="background:url({{person.ImageUrl}}.ImageUrl)"></span>
+                                Age:{{person.Age}}
+                                <br>Distance:{{person.Distance.text}}
+                                <br> Time to reach:{{person.Duration.text}}
+                                <br> Last Seen:{{person.LastSeen}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="jumbotron col-sm-7">
+            <h1>Welcome!</h1>
+            <p class="lead">{{yourAddress}}</p>
+            <div id="map"></div>
+            <div id="error-div"></div>
+        </div>
+
+        <div class="container col-sm-2" id="nearbyPeopleListContainer">
+            <div class="panel-group" id="nearbyPeopleList">
+                <div ng-repeat="person in peopleList"  ng-if=person.ShowInNearby ng-class="GetGenderClass(person.Gender)" ng-click="ShowPersonOnMap(person)">
+                    <div class="panel-heading">
+                        {{person.Name}} 
+                         <span  ng-click="LikeUnlike(person,$event)" ng-class="GetLikeClass(person.UserId)" ></span>
+                    </div>
+                    <div class="panel-body">
+                        <span class="pull-right iconImageUrl" style="background:url({{person.ImageUrl}}.ImageUrl)"></span>
+                            Age:{{person.Age}}
+                            <br>Distance:{{person.Distance.text}}
+                            <br> Time to reach:{{person.Duration.text}}
+                            <br> Last Seen:{{person.LastSeen}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}

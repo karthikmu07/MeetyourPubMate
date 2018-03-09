@@ -1,0 +1,55 @@
+﻿
+<div class="modal fade in" style="" id="myLoginModal" ng-show="showModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color:ghostwhite;text-align:center;">
+
+            <div class="modal-body">
+                <h2>Login Or Signup</h2>
+                <div class="g-signin2 text-center" style="display:inline-block;" data-onSuccess="onSignIn"></div>
+            </div>
+
+            <button type="button" ng-click="HideMyModal()" class="btn btn-warning center-block" data-dismiss="modal" style="margin-bottom:10px">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function onSignIn(googleUser) {
+        debugger;
+        var profile = googleUser.getBasicProfile();
+        var id = profile.getId(); // Do not send to your backend! Use an ID token instead.
+        var name = profile.getName();
+        var imageUrl = profile.getImageUrl();
+        var emailId = profile.getEmail(); // This is null if the 'email' scope is not present.
+        var id_token = googleUser.getAuthResponse().id_token;
+        var expiryTime = googleUser.getAuthResponse().expires_in;
+         gapi.load('auth2', function () {
+            //var auth2 = gapi.auth2.getAuthInstance();
+            //auth2.signOut();
+            //console.log('Logged out.');
+             gapi.auth2.init();                     
+        });
+         
+
+        var loginModel = { Name: name, Email: emailId, ImageUrl: imageUrl, Token: id_token, Expiry: expiryTime };
+        $http = angular.injector(["ng"]).get("$http");
+        var res = $http.post('./Login/Login', loginModel).then(function successCallback(response) {
+            debugger;
+            if (response.data.result == 'Error') {
+                //show error
+            }
+            else if (response.data.result == 'Redirect') {
+                window.location = response.data.url;
+            }
+            else if (response.data.result == "Add") {
+                window.location.href = response.data.url;
+            }
+        }, function errorCallback(response) {
+            console.log("Unable to perform get request");
+        });
+
+    }
+
+</script>
+
+

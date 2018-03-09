@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoupleEntry", "CoupleEntry\CoupleEntry.csproj", "{A6D1D8F3-CB01-409D-87DD-AA30B9A093F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoupleEntry.AuthenticationProvider", "UxWeb.AuthenticationProvider\CoupleEntry.AuthenticationProvider.csproj", "{5CAC6C8F-F2C4-4B5A-AE1B-C5B3DF1A2BC8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A6D1D8F3-CB01-409D-87DD-AA30B9A093F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6D1D8F3-CB01-409D-87DD-AA30B9A093F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6D1D8F3-CB01-409D-87DD-AA30B9A093F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6D1D8F3-CB01-409D-87DD-AA30B9A093F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CAC6C8F-F2C4-4B5A-AE1B-C5B3DF1A2BC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CAC6C8F-F2C4-4B5A-AE1B-C5B3DF1A2BC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CAC6C8F-F2C4-4B5A-AE1B-C5B3DF1A2BC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CAC6C8F-F2C4-4B5A-AE1B-C5B3DF1A2BC8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

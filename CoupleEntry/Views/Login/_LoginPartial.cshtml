@@ -1,0 +1,26 @@
+﻿@using CoupleEntry.Models
+@{
+    User currentUser = SessionService.GetProperty(SessionService.SessionVariableNames.Current_User) as User;   
+}
+@if (currentUser != null)
+{
+    <div class="navbar-right">
+        @Html.AntiForgeryToken()
+
+        <ul class="nav navbar-nav navbar-right">
+            <li><span class="pull-right iconImageUrl" style="background:url({{MyInfo.ImageUrl}})"></span></li>
+            <li>
+                @Html.ActionLink("Hello {{MyInfo.Name}}!", "EditUserDetails", "Home", routeValues: null, htmlAttributes: new { title = "Edit User Details" })
+            </li>
+
+            <li><a href="#" ng-click="signOut()">Log off</a></li>
+        </ul>
+    </div>
+
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li ng-click="ShowMyModal()"><a>Login/SignUp</a></li>
+    </ul>
+}
