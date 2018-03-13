@@ -301,12 +301,12 @@ namespace CoupleEntry
             IDbCommand command = new SqlCommand(procName);
             command.CommandType = CommandType.StoredProcedure;
             SqlParameter returnParameter = new SqlParameter() { ParameterName = "match", SqlDbType = SqlDbType.Bit, Direction = ParameterDirection.Output };
-           // SqlParameter returnParameter2 = new SqlParameter() { ParameterName = "error", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Output };
+            // SqlParameter returnParameter2 = new SqlParameter() { ParameterName = "error", SqlDbType = SqlDbType.VarChar, Direction = ParameterDirection.Output };
             command.Parameters.Add(new SqlParameter() { ParameterName = "userId", SqlDbType = SqlDbType.Int, Value = userId });
             command.Parameters.Add(new SqlParameter() { ParameterName = "targetId", SqlDbType = SqlDbType.Int, Value = targetId });
             command.Parameters.Add(new SqlParameter() { ParameterName = "liked", SqlDbType = SqlDbType.Bit, Value = liked });
             command.Parameters.Add(returnParameter);
-          //  command.Parameters.Add(returnParameter2);
+            //  command.Parameters.Add(returnParameter2);
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 command.Connection = connection;
@@ -316,7 +316,7 @@ namespace CoupleEntry
             }
 
             return Convert.ToBoolean(returnParameter.Value);
-            
+
         }
 
         public static void UpdateImageUrl(string emailId, string imageUrl)
@@ -336,6 +336,64 @@ namespace CoupleEntry
             }
 
         }
+
+        public static List<Message> GetMessages(int fromUserId, int toUserId)
+        {
+            List<Message> messages = new List<Message>();
+            Message message = new Message();
+
+            string procName = "GetMessages";
+            IDbCommand command = new SqlCommand(procName);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.Add(new SqlParameter() { ParameterName = "fromUserId", SqlDbType = SqlDbType.Int, Value = fromUserId });
+            command.Parameters.Add(new SqlParameter() { ParameterName = "toUserId", SqlDbType = SqlDbType.Int, Value = toUserId });
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                command.Connection = connection;
+                connection.Open();
+
+                using (IDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                {
+                    if (reader != null)
+                    {
+                        while (reader.Read())
+                        {
+                            message.MessageId = Convert.ToInt32(GetStringFromReader("MessageId", reader));
+                            message.ToUserId = Convert.ToInt32(GetStringFromReader("ToUserId", reader));
+                            message.FromUserId = Convert.ToInt32(GetStringFromReader("FromUserId", reader));
+                            message.Value = GetStringFromReader("Message", reader);
+                            message.Timestamp = Convert.ToDateTime(GetStringFromReader("TimeStamp", reader));
+                            messages.Add(message);
+                        }
+                    }
+                }
+
+                connection.Close();
+            }
+
+
+            return messages;
+        }
+
+        public static void AddMessage(int fromUserId, int toUserId, string message)
+        {
+            string procName = "AddMessage";
+            IDbCommand command = new SqlCommand(procName);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.Add(new SqlParameter() { ParameterName = "fromUserId", SqlDbType = SqlDbType.NVarChar, Value = fromUserId });
+            command.Parameters.Add(new SqlParameter() { ParameterName = "toUserId", SqlDbType = SqlDbType.Int, Value = toUserId });
+            command.Parameters.Add(new SqlParameter() { ParameterName = "message", SqlDbType = SqlDbType.NVarChar, Value = message });
+            command.Parameters.Add(new SqlParameter() { ParameterName = "timeStamp", SqlDbType = SqlDbType.DateTime, Value = DateTime.Now });
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                command.Connection = connection;
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+
+        }
+
         public static string GetStringFromReader(string column, IDataReader reader)
         {
             string value = null;

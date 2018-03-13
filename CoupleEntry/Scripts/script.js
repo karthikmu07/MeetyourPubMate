@@ -16,6 +16,7 @@ mainModule.config(
 );
 
 mainModule.controller("ChatController", function ($scope, $routeParams, $route, $http, $location) {
+    debugger;
     if ($routeParams.myId) {
         $scope.ActiveChatUser = $routeParams.myId;
     }

@@ -121,10 +121,32 @@ namespace CoupleEntry.Controllers
 
         }
 
+        public JsonResult GetMessages(int otherUserId)
+        {
+            User currentUser = GetProperty(SessionVariableNames.Current_User) as User;
+            List<Message> messages = DALayer.GetMessages(currentUser.UserId, otherUserId);
+            return Json(messages, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult AddMessage(int otherUserId, string message)
+        {
+            User currentUser = GetProperty(SessionVariableNames.Current_User) as User;
+            try
+            {
+                DALayer.AddMessage(currentUser.UserId, otherUserId, message);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+        }
+
         [UxWebAuthorize]
         public ActionResult Chat()
         {
-
+            GetEmailIdAndRefreshUserSession(true);
             return View();
         }
     }
