@@ -12,6 +12,7 @@ namespace CoupleEntry.Models
         public int ToUserId { get; set; }
         public string Value { get; set; }
         public DateTime Timestamp { get; set; }
-
+        public string Time { get; set; }
+        public string Date { get; set; }
     }
 }

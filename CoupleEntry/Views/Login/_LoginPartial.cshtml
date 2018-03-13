@@ -14,7 +14,9 @@
             <li>
                 @Html.ActionLink("Hello {{MyInfo.Name}}!", "EditUserDetails", "Home", routeValues: null, htmlAttributes: new { title = "Edit User Details" })
             </li>
-
+            <li>
+                @Html.ActionLink("Messages", "Chat", "Home", routeValues: null, htmlAttributes: new { title = "Messages" })
+            </li>
             <li><a href="#" ng-click="signOut()">Log off</a></li>
         </ul>
     </div>

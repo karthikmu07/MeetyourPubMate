@@ -1,5 +1,14 @@
 ﻿
-<div class="jumbotron row">
-    
-    (Chat with User:{{ActiveChatUser}} will be shown here)
+<div class="row">
+    <ul class="chatBoxArea">
+        <li ng-repeat="message in Messages" ng-class="GetMessageClass(message.FromUserId)">
+            <div ng-class="GetMessageTextClass(message.FromUserId)" > {{message.Value}}</div>
+            <div class="messageTime">{{message.Time}}</div>
+        </li>
+    </ul> 
+  
+</div>
+<div class="row">
+    <input ng-model="messageValue" type="text" id="msgBox" class="col-sm-10 form-control" placeholder="Type your message...">
+    <button id="sendMsg" ng-click="SendMessage()" class="btn col-sm-2">Send</button>
 </div>

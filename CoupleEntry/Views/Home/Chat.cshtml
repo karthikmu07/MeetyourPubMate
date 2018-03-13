@@ -4,20 +4,22 @@
 }
 @section Chat{
   
-    <div ng-controller="ChatController"  ng-init="GetMatchedUsers()" class="container">
+    <div style="background-color: darkkhaki;" ng-controller="ChatController"  ng-init="GetMatchedUsers()" class="container">
         <div class="row">
-            <div class="col col-sm-4">
+            <div  class="col col-sm-4">
                 <h3>Your Matches:</h3>
-                <div ng-repeat="person in MatchedUsers" class="tile cursorPointer panel-success">
-                    <div ng-click="ShowChatOfUser(person.UserId)" class="panel-heading">
-                        <span> {{person.Name | uppercase}}</span>    
-                        <span ng-if="person.UserId==ActiveChatUser" class="glyphicon glyphicon-user"></span>                                     
-                    </div>                 
+                <div id="matchedUsersChat">
+                    <div ng-repeat="person in MatchedUsers" class="tile messageUsers cursorPointer" ng-class-even="'panel-warning'" ng-class-odd="'panel-success'">
+                        <div ng-click="ShowChatOfUser(person)" class="panel-heading">
+                            <span> {{person.Name | uppercase}}</span>
+                            <span ng-if="person.UserId==ActiveChatUser" class="glyphicon glyphicon-user"></span>
+                        </div>
+                    </div>              
                 </div>
             </div>
             <div class="col col-sm-8">
                 <h3>Messages:</h3>
-                <div ng-view></div>
+                <div ng-view></div>                
             </div>
         </div>
     </div>

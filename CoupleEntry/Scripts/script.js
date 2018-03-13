@@ -7,25 +7,23 @@ mainModule.config(
     function ($routeProvider, $locationProvider) {
         $locationProvider.hashPrefix('');
 
-        $routeProvider.when('/:myId', { templateUrl: '../templates/UserChatBox.html', controller: 'ChatController' }).
-            when('/', { templateUrl: '../templates/DefaultChatBox.html', controller: 'ChatController' }).
+        $routeProvider.when('/:myId', { templateUrl: '../templates/UserChatBox.html', controller: 'ChatBoxController' }).
+            when('/', { templateUrl: '../templates/DefaultChatBox.html', controller: 'ChatBoxController' }).
             otherwise({ redirectTo: "../templates/DefaultChatBox.html" });
         //$locationProvider.html5Mode(true);
     }
 
 );
 
-mainModule.controller("ChatController", function ($scope, $routeParams, $route, $http, $location) {
-    debugger;
-    if ($routeParams.myId) {
-        $scope.ActiveChatUser = $routeParams.myId;
-    }
+mainModule.controller("ChatController", function ($scope, $routeParams, $route, $http, $location, $rootScope) {
+
     $scope.GetMatchedUsers = function () {
-        // $rootScope.showMask = true;
+        $rootScope.showMask = true;
         $http.get(baseUrl + "Home/GetMatchedUsers")
             .then(function successCallback(response) {
                 if (response.status == 200) {
                     $scope.MatchedUsers = response.data;
+                    $rootScope.showMask = false;
                 }
                 else {
                     location.reload();
@@ -33,23 +31,60 @@ mainModule.controller("ChatController", function ($scope, $routeParams, $route, 
 
             }, function errorCallback(response) {
                 console.log("Unable to perform get request");
+                $rootScope.showMask = false;
             });
     }
 
-    $scope.ShowChatOfUser = function (userId) {
-        $scope.ActiveChatUser = userId;
-        $location.path(userId);
+    $scope.ShowChatOfUser = function (person) {
+        $rootScope.ActiveChatUser = person.UserId;
+        $rootScope.ActiveChatUserName = person.Name;
+        $location.path(person.UserId);
     }
-   
-    // else {
-    //    $scope.message = "This is Routing and Views example! Try adding a parameter in URL(eg:/routing/1)";
-    //    $scope.routeMsg = $route.current.myText;
-    //    $scope.hideFlag = false;
-    //}
-
 
 });
 
+mainModule.controller("ChatBoxController", function ($scope, $routeParams, $route, $http, $location, $rootScope) {
+    if ($routeParams.myId) {
+        $rootScope.ActiveChatUser = $routeParams.myId;
+        $rootScope.showMask = true;
+        $http.get(baseUrl + "Home/GetMessages?otherUserId=" + $routeParams.myId)
+             .then(function successCallback(response) {
+                 if (response.status == 200) {
+                     $scope.Messages = response.data;
+                     $rootScope.showMask = false;
+                 }
+                 else {
+                     location.reload();
+                 }
+
+             }, function errorCallback(response) {
+                 console.log("Unable to perform get request");
+                 $rootScope.showMask = false;
+             });
+    }
+    else {
+        $rootScope.ActiveChatUser = "";
+    }
+    $scope.GetMessageClass = function (fromUserId) {
+        if (fromUserId == $rootScope.MyInfo.UserId)
+            return "mymsg";
+        else
+            return "hismsg";
+    }
+    $scope.GetMessageTextClass = function (fromUserId) {
+        if (fromUserId == $rootScope.MyInfo.UserId)
+            return "mymsgText";
+        else
+            return "hismsgText";
+    }
+
+    $scope.SendMessage = function () {
+         if ($scope.messageValue) {
+            SendMessage($http, $scope, $rootScope.ActiveChatUser);
+        }
+    }
+
+});
 mainModule.run(function ($http, $rootScope, $location) {
     GetUserInfo($http, $rootScope);
     $rootScope.showMask = false;
@@ -73,6 +108,24 @@ mainModule.run(function ($http, $rootScope, $location) {
     }
 });
 
+
+function SendMessage($http, $scope, otherUserId) {
+    $http.get(baseUrl + "Home/AddMessage?otherUserId=" + otherUserId + "&message=" + $scope.messageValue)
+            .then(function successCallback(response) {
+                if (response.status == 200 && response.data.success) {
+                     $scope.Messages.push(response.data.message);
+                    $scope.messageValue = "";
+                }
+                else {
+                    location.reload();
+                }
+
+            }, function errorCallback(response) {
+                console.log("Unable to perform get request");
+                $rootScope.showMask = false;
+            });
+
+}
 function GetUserInfo($http, $rootScope) {
     $http.get(baseUrl + "Home/GetUserInfo")
         .then(function successCallback(response) {
@@ -339,8 +392,8 @@ mainModule.controller('indexController', function ($scope, $http, $rootScope, $i
     }
 
     $scope.ShowUserChat = function (person) {
-         window.location.href = baseUrl + "home/chat#/" + person.UserId;
-       // window.location.href = baseUrl + "home/chat";
+        window.location.href = baseUrl + "home/chat#/" + person.UserId;
+        // window.location.href = baseUrl + "home/chat";
     }
 
     $scope.LikeUnlike = function (person, objSender) {

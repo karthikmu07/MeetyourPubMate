@@ -67,7 +67,7 @@ textarea {
     zoom: 59%;
 }
 
-#nearbyPeopleListContainer,#matchedPeopleListContainer {
+#nearbyPeopleListContainer, #matchedPeopleListContainer {
     overflow-y: scroll;
 }
 
@@ -75,6 +75,7 @@ textarea {
     max-height: 668px;
     min-height: 668px;
 }
+
 #matchedPeopleList {
     max-height: 366px;
     min-height: 366px;
@@ -92,6 +93,92 @@ textarea {
 .block {
     display: block;
 }
+
+.messageUsers {
+    margin-bottom: 8px;
+}
+
+
+ul {
+    list-style-type: none;
+}
+
+.hismsg {
+    border: 1px solid brown;
+    list-style-position: inside;
+    padding: 5px;
+    border-radius: 25px;
+    background-color: burlywood;
+    color: beige;
+    margin-bottom: 3px;
+    margin-top: 2px;
+    word-break: break-all;
+    line-height: 20px;
+    padding-left: 18px;
+    margin-right: 150px;
+}
+
+.mymsg {
+    border: 1px solid brown;
+    list-style-position: inside;
+    padding: 5px;
+    border-radius: 25px;
+    background-color: lightblue;
+    color: peru;
+    margin-bottom: 3px;
+    margin-top: 2px;
+    word-break: break-all;
+    line-height: 20px;
+    padding-left: 18px;
+    margin-left: 150px;
+}
+
+.messageTime {
+    /*margin-right:10px;*/
+    color: dimgray;
+    font-size: 10px;
+}
+/*.mymsgText {
+     font-weight: bold;
+    color: grey;
+}
+
+.himmsgText {
+    font-weight: bold;
+    color: indianred;
+}*/
+
+#matchedUsersChat {
+    border-radius: 25px;
+    color: darkslategrey;
+    /*background-color: indianred;*/
+    /*height: 500px;*/
+    /*width: 200px;*/
+    overflow: auto;
+}
+
+.chatBoxArea {
+    color: darkslategrey;
+    background-color: lightyellow;
+    height: 600px;
+    width: 600px;
+    overflow: auto;
+    padding-top: 10px;
+    border-radius: 40px;
+    padding-right: 30px;
+    margin-bottom: 10px;
+}
+
+
+#sendMsg {
+    background-color: darkslategrey;
+    color: white;
+    height: 40px;
+    border-radius: 20px;
+    height: 40px !important;
+    margin-bottom: 10px;
+}
+
 .tile {
     border-radius: 25px !important;
     max-height: 320px;
@@ -104,3 +191,11 @@ textarea {
         transform: translateX(-3px);
         transition-duration: 0.5s;
     }
+
+#msgBox {
+    min-width: 500px;
+    background-color: saddlebrown;
+    color: white;
+    border-radius: 25px;
+    height: 40px;
+}

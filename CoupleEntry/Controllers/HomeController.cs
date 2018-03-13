@@ -124,6 +124,11 @@ namespace CoupleEntry.Controllers
         public JsonResult GetMessages(int otherUserId)
         {
             User currentUser = GetProperty(SessionVariableNames.Current_User) as User;
+            if (currentUser == null)
+            {
+                GetEmailIdAndRefreshUserSession(true);
+                currentUser = GetProperty(SessionVariableNames.Current_User) as User;
+            }
             List<Message> messages = DALayer.GetMessages(currentUser.UserId, otherUserId);
             return Json(messages, JsonRequestBehavior.AllowGet);
 
@@ -131,16 +136,17 @@ namespace CoupleEntry.Controllers
 
         public JsonResult AddMessage(int otherUserId, string message)
         {
+            Int64 newMsgId;
             User currentUser = GetProperty(SessionVariableNames.Current_User) as User;
             try
             {
-                DALayer.AddMessage(currentUser.UserId, otherUserId, message);
+                newMsgId = DALayer.AddMessage(currentUser.UserId, otherUserId, message);
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
-            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            return Json(new { success = true,message=new Message {Date=DateTime.Now.ToShortDateString(),FromUserId=currentUser.UserId,ToUserId=otherUserId,MessageId=newMsgId,Time=DateTime.Now.ToShortTimeString(),Timestamp=DateTime.Now,Value=message } }, JsonRequestBehavior.AllowGet);
         }
 
         [UxWebAuthorize]

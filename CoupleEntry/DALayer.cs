@@ -340,8 +340,7 @@ namespace CoupleEntry
         public static List<Message> GetMessages(int fromUserId, int toUserId)
         {
             List<Message> messages = new List<Message>();
-            Message message = new Message();
-
+            Message message;
             string procName = "GetMessages";
             IDbCommand command = new SqlCommand(procName);
             command.CommandType = CommandType.StoredProcedure;
@@ -358,11 +357,14 @@ namespace CoupleEntry
                     {
                         while (reader.Read())
                         {
+                            message = new Message();
                             message.MessageId = Convert.ToInt32(GetStringFromReader("MessageId", reader));
                             message.ToUserId = Convert.ToInt32(GetStringFromReader("ToUserId", reader));
                             message.FromUserId = Convert.ToInt32(GetStringFromReader("FromUserId", reader));
                             message.Value = GetStringFromReader("Message", reader);
                             message.Timestamp = Convert.ToDateTime(GetStringFromReader("TimeStamp", reader));
+                            message.Time = message.Timestamp.ToShortTimeString();
+                            message.Date = message.Timestamp.ToShortDateString();
                             messages.Add(message);
                         }
                     }
@@ -375,8 +377,9 @@ namespace CoupleEntry
             return messages;
         }
 
-        public static void AddMessage(int fromUserId, int toUserId, string message)
+        public static int AddMessage(int fromUserId, int toUserId, string message)
         {
+            int result = 0;
             string procName = "AddMessage";
             IDbCommand command = new SqlCommand(procName);
             command.CommandType = CommandType.StoredProcedure;
@@ -388,10 +391,11 @@ namespace CoupleEntry
             {
                 command.Connection = connection;
                 connection.Open();
-                command.ExecuteNonQuery();
+                //command.ExecuteNonQuery();
+                result = Convert.ToInt32(command.ExecuteScalar());
                 connection.Close();
             }
-
+            return result;
         }
 
         public static string GetStringFromReader(string column, IDataReader reader)
