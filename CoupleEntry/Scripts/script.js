@@ -1,23 +1,67 @@
 ﻿
 var map;
 var lastMarker;
-var mainModule = angular.module("mainModule", []);
+var mainModule = angular.module("mainModule", ["ngRoute"]);
 
-mainModule.run(function ($rootScope, $location) {
+mainModule.config(
+    function ($routeProvider, $locationProvider) {
+        $locationProvider.hashPrefix('');
+
+        $routeProvider.when('/:myId', { templateUrl: '../templates/UserChatBox.html', controller: 'ChatController' }).
+            when('/', { templateUrl: '../templates/DefaultChatBox.html', controller: 'ChatController' }).
+            otherwise({ redirectTo: "../templates/DefaultChatBox.html" });
+        //$locationProvider.html5Mode(true);
+    }
+
+);
+
+mainModule.controller("ChatController", function ($scope, $routeParams, $route, $http, $location) {
+    if ($routeParams.myId) {
+        $scope.ActiveChatUser = $routeParams.myId;
+    }
+    $scope.GetMatchedUsers = function () {
+        // $rootScope.showMask = true;
+        $http.get(baseUrl + "Home/GetMatchedUsers")
+            .then(function successCallback(response) {
+                if (response.status == 200) {
+                    $scope.MatchedUsers = response.data;
+                }
+                else {
+                    location.reload();
+                }
+
+            }, function errorCallback(response) {
+                console.log("Unable to perform get request");
+            });
+    }
+
+    $scope.ShowChatOfUser = function (userId) {
+        $scope.ActiveChatUser = userId;
+        $location.path(userId);
+    }
+   
+    // else {
+    //    $scope.message = "This is Routing and Views example! Try adding a parameter in URL(eg:/routing/1)";
+    //    $scope.routeMsg = $route.current.myText;
+    //    $scope.hideFlag = false;
+    //}
+
+
+});
+
+mainModule.run(function ($http, $rootScope, $location) {
+    GetUserInfo($http, $rootScope);
     $rootScope.showMask = false;
     $rootScope.showModal = true;
     $rootScope.signOut = function () {
-
         gapi.auth2.init();
         gapi.load('auth2', function () {
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
                 console.log('User signed out.');
-                window.location.href = baseUrl + "/login/login";
+                window.location.href = baseUrl + "login/login";
             });
         });
-
-
     }
     $rootScope.ShowMyModal = function () {
         $rootScope.showModal = true;
@@ -29,7 +73,7 @@ mainModule.run(function ($rootScope, $location) {
 });
 
 function GetUserInfo($http, $rootScope) {
-    $http.get(baseUrl + "/Home/GetUserInfo")
+    $http.get(baseUrl + "Home/GetUserInfo")
         .then(function successCallback(response) {
             $rootScope.MyInfo = response.data;
         }, function errorCallback(response) {
@@ -44,7 +88,7 @@ function Initialize($scope, $http, $rootScope) {
     $scope.HaveMatches = false;
     $scope.peopleList = [];
     $scope.yourAddress = "";
-    GetUserInfo($http, $rootScope);
+    //GetUserInfo($http, $rootScope);
     gapi.load('auth2', function () {
         gapi.auth2.init();
     });
@@ -79,7 +123,7 @@ function ShowOnMap(lat, lon, label, address) {
 }
 
 function UpsertUserPosition(position, $http) {
-    $http.get(baseUrl + "/Home/AddUserPositionToDB?latitude=" + position.coords.latitude + "&longitude=" + position.coords.longitude)
+    $http.get(baseUrl + "Home/AddUserPositionToDB?latitude=" + position.coords.latitude + "&longitude=" + position.coords.longitude)
         .then(function successCallback(response) {
 
         }, function errorCallback(response) {
@@ -167,7 +211,7 @@ function ShowError(error) {
 
 function AddOrRemoveNewLike(person, liked, $http, $scope, $rootScope) {
     var targetId = person.UserId.toString();
-    $http.get(baseUrl + "/Home/AddOrRemoveLike?targetId=" + person.UserId + "&liked=" + liked)
+    $http.get(baseUrl + "Home/AddOrRemoveLike?targetId=" + person.UserId + "&liked=" + liked)
         .then(function successCallback(response) {
             if (response.status != 200) {
                 location.reload();
@@ -229,7 +273,7 @@ mainModule.controller('indexController', function ($scope, $http, $rootScope, $i
 
     $scope.GetOtherUsers = function () {
         $rootScope.showMask = true;
-        $http.get(baseUrl + "/Home/GetOtherUsers")
+        $http.get(baseUrl + "Home/GetOtherUsers")
             .then(function successCallback(response) {
                 if (response.status == 200) {
                     FindNearbyPeople($scope, response.data, $rootScope);
@@ -293,14 +337,18 @@ mainModule.controller('indexController', function ($scope, $http, $rootScope, $i
         ShowOnMap(person.Latitude, person.Longitude, person.Name, person.Address);
     }
 
+    $scope.ShowUserChat = function (person) {
+         window.location.href = baseUrl + "home/chat#/" + person.UserId;
+       // window.location.href = baseUrl + "home/chat";
+    }
+
     $scope.LikeUnlike = function (person, objSender) {
         var element = angular.element(objSender.target);
         var liked = element.hasClass("glyphicon-heart-empty");
         AddOrRemoveNewLike(person, liked, $http, $scope, $rootScope);
     }
 
-    $scope.FindUsers = function (event)
-    {
+    $scope.FindUsers = function (event) {
         if (event.keyCode == 13)
             $scope.GetOtherUsers();
     }

@@ -44,6 +44,18 @@ namespace CoupleEntry.Controllers
 
         }
 
+
+        [UxWebAuthorize]
+        public JsonResult GetMatchedUsers()
+        {
+            string emailId = GetEmailIdAndRefreshUserSession(false);
+            User currentUser = GetProperty(SessionVariableNames.Current_User) as User;
+            List<User> users = DALayer.GetMatchedUsers(string.Join(",", currentUser.Matches));
+            users.ForEach(x => x.LastSeenDiff = (DateTime.UtcNow - x.LastSeen).TotalSeconds.ToString());
+            return Json(users, JsonRequestBehavior.AllowGet);
+
+        }
+
         [UxWebAuthorize]
         public ActionResult EditUserDetails()
         {
@@ -107,6 +119,13 @@ namespace CoupleEntry.Controllers
             string emailId = GetEmailIdAndRefreshUserSession(false);
             return Json(DALayer.GetUserInfo(emailId), JsonRequestBehavior.AllowGet);
 
+        }
+
+        [UxWebAuthorize]
+        public ActionResult Chat()
+        {
+
+            return View();
         }
     }
 }

@@ -158,6 +158,50 @@ namespace CoupleEntry
             return allUsers;
         }
 
+        public static List<User> GetMatchedUsers(string matches)
+        {
+            List<User> allUsers = new List<User>();
+
+            string procName = "GetMatchedUsers";
+            IDbCommand command = new SqlCommand(procName);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.Add(new SqlParameter() { ParameterName = "@MatchedUsers", SqlDbType = SqlDbType.NVarChar, Value = matches });
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                command.Connection = connection;
+                connection.Open();
+
+
+                using (IDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                {
+                    if (reader != null)
+                    {
+                        while (reader.Read())
+                        {
+                            int userId = Convert.ToInt32(GetStringFromReader("UserId", reader));
+                            string name = GetStringFromReader("Name", reader);
+                            string emailid = GetStringFromReader("EmailId", reader);
+                            string imageurl = GetStringFromReader("ImageUrl", reader);
+                            int age = Convert.ToInt32(GetStringFromReader("Age", reader));
+                            string gender = GetStringFromReader("Gender", reader);
+                            string latitude = GetStringFromReader("Latitude", reader);
+                            string longitude = GetStringFromReader("Longitude", reader);
+                            string username = GetStringFromReader("UserName", reader);
+                            DateTime lastseen = Convert.ToDateTime(GetStringFromReader("LastSeen", reader));
+
+                            allUsers.Add(new User() { UserId = userId, Name = name, EmailId = emailid, ImageUrl = imageurl, Age = age, Gender = gender, Latitude = latitude, Longitude = longitude, LastSeen = lastseen, Username = username });
+                        }
+                    }
+                }
+
+                connection.Close();
+            }
+
+
+            return allUsers;
+        }
+
         public static User GetUserInfo(string emailId)
         {
             User currentUser = new User();

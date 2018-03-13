@@ -11,14 +11,16 @@
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAme7silNihhy4-UJNE76I2LUdf2PxkEZY">
     </script>
+  
     <script src="~/Scripts/angular.js"></script>
-     <script src="~/Scripts/script.js"></script>
+    <script src="~/Scripts/angular-route.js"></script>
+    <script src="~/Scripts/script.js"></script>
     @Styles.Render("~/Content/css")
 
 </head>
 <body>
     <script>
-        var baseUrl='@string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))';     
+        var baseUrl = '@string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))';
     </script>
     <div ng-app="mainModule">
         <div class="navbar navbar-inverse navbar-fixed-top">
@@ -43,30 +45,34 @@
         </div>
         <div id="mainDiv" class="container-fluid body-content">
 
-       @if (IsSectionDefined("Login"))
-       {
-        <div ng-controller="loginController">
-            @Html.Partial("~/Views/Login/_LoginModal.cshtml")
-            @RenderSection("Login")
-        </div>
-       }
+            @if (IsSectionDefined("Login"))
+            {
+                <div ng-controller="loginController">
+                    @Html.Partial("~/Views/Login/_LoginModal.cshtml")
+                    @RenderSection("Login")
+                </div>
+            }
 
-       @if (IsSectionDefined("Integration"))
-        {
-        @RenderSection("Integration")
-        }
+            @if (IsSectionDefined("Integration"))
+            {
+                @RenderSection("Integration")
+            }
 
-       @if (IsSectionDefined("AddUser"))
-        {
-        @RenderSection("AddUser")
-        }
+            @if (IsSectionDefined("AddUser"))
+            {
+                @RenderSection("AddUser")
+            }
 
-       @if (IsSectionDefined("EditUser"))
-        {
-        @RenderSection("EditUser")
-        }
+            @if (IsSectionDefined("EditUser"))
+            {
+                @RenderSection("EditUser")
+            }
+            @if (IsSectionDefined("Chat"))
+            {
+                @RenderSection("Chat")
+            }
 
-      
+
         </div>
     </div>
 
